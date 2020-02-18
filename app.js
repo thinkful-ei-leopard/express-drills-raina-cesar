@@ -42,30 +42,52 @@ app.get('/sum', (req, res) => {
 //Drill 2
 // two parameters text amd shift
 // Making a shift Cipher
-app.get('./cipher', (req,res) => {
-  const { text, shift } = req.query;
 
+app.get('/cipher', (req,res) => {
+  const { text, shift } = req.query;
+  
   if (!text) {
     return res.status(400).send('this part is required');
   }
-
+  
   if (!shift) {
     return res.status(400).send('this part is required');
   }
-
+  
   if (typeof text !== 'string') {
     return res.status(400).send('text must be a string'); 
   }
-
+  
   const shiftNum = parseFloat(shift);
-
+  
   if (typeof shiftNum !== 'number') {
     return res.status(400).send('text must be a number');  
   }
+    
+  const start = 'A'.charCodeAt(0);
   
+  let cipher = text 
+    .toUpperCase()
+    .split('')
+    .map(letter => {
+      const code = letter.charCodeAt(0);
+      if(code < start || code > (start +26)){
+        return letter;
+      }
+      let diff = code - start;
+      diff = diff + shiftNum;
+      diff = diff % 26;
+        
+      const shiftedChar = String.fromCharCode(start + diff);
+      return shiftedChar;
+    });
   
+  cipher = cipher.join('');
+  res.status(200).send(cipher);
+    
 });
-
+  
 app.listen(8000, () => {
   console.log('Express server is listening on port 8000!');
 });
+
