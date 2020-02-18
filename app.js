@@ -10,8 +10,8 @@ app.use(morgan('common'));
 // returns a string 'The sum of a and b is c'
 app.get('/sum', (req, res) => {
 
-  const {a, b} = req.query;
-  
+  const {a} = req.query;
+  const {b} = req.query;
 
   if (!a) {
     return res.status(400).send('Please provide a number');
@@ -24,15 +24,15 @@ app.get('/sum', (req, res) => {
   const numA = parseFloat(a);
   const numB = parseFloat(b);
 
-  if (Number.NaN(numA)) {
+  if (typeof numA !== 'number') {
     return res.status(400).send('this must be a number');
   }
 
-  if (Number.NaN(numB)) {
+  if (typeof numB !== 'number') {
     return res.status(400).send('this must be a number');
   }
 
-  const c = a + b;
+  const c = numA + numB;
   const resopnse = `The sum of ${a} and ${b} is ${c}`;
 
   res.send(resopnse);
