@@ -86,6 +86,61 @@ app.get('/cipher', (req,res) => {
   res.status(200).send(cipher);
     
 });
+
+// drill3
+/******
+    1. randomly generates 6numbers 
+    2. numbers are between 1 - 2  ******/
+
+app.get('/lotto', (req, res) => {
+  const {numbers} = req.query;
+  const randomNumbers = [];
+
+  if (!numbers) {
+    return res.status(400).send('this part is required');
+  }
+
+  if (!Array.isArray(numbers)) {
+    return res.status(400).send('number must be in an array');
+  }
+
+  if (numbers.length !== 6) {
+    return res.status(400).send('6 numbers required');
+  }
+
+  const guess = numbers
+    .map(n => parseInt(n))
+    .filter(n => (typeof n !== 'number') && (n >=1 && n <= 20) );
+
+  const stockNumbers = Array(20).fill(1).map((_,i) => i + 1);
+
+  for(let i = 0; i < 6; i++) {
+    const ran = Math.floor(Math.random() * stockNumbers.length);
+    randomNumbers.push(stockNumbers[ran]);
+    stockNumbers.splice(ran, 1);
+  }
+
+  let diff = randomNumbers.filter(n => !guess.includes(n));
+
+  if(diff === 0){
+    res.status(200).send('Wow! Unbelievable! You could have won the mega millions!');
+  }
+  else if(diff > 1){
+    res.status(200).send('Congratulations! You win $100!');
+  }
+  else if(diff > 2 && diff <= 19){
+    res.status(200).send('Congratulations, you win a free ticket');
+  }
+  else {
+    res.status(200).send('Sorry, you lose');
+  }
+});
+
+
+
+
+
+
   
 app.listen(8000, () => {
   console.log('Express server is listening on port 8000!');
